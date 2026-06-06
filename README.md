@@ -120,4 +120,4 @@ python scripts/etl_pipeline.py
 
 ## Important note
 
-All data is sourced from publicly available information published by AMFI India, NSE, BSE, and open APIs. This project is for educational purposes only and does not constitute financial advice.
+All data is sourced from publicly available information published by AMFI India, NSE, BSE, and open APIs.
