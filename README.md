@@ -2,12 +2,6 @@
 
 <div align="center">
 
-![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
-![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
-![Pandas](https://img.shields.io/badge/Pandas-Data%20Wrangling-150458?style=for-the-badge&logo=pandas&logoColor=white)
-![Jupyter](https://img.shields.io/badge/Jupyter-Notebooks-F37626?style=for-the-badge&logo=jupyter&logoColor=white)
-
 **End-to-end Mutual Fund Analytics Platform built as a Data Analyst Intern Capstone at Bluestock Fintech Pvt. Ltd.**
 
 *7 Working Days | June 2026 | Data Source: AMFI India, mfapi.in, NSE/BSE*
@@ -247,7 +241,5 @@ python scripts/recommender.py --risk High --top 5
 
 **Divyanshu Rai** — Data Analyst Intern
 Bluestock Fintech Pvt. Ltd. | June 2026
-
-*"Making institutional-grade fund analytics accessible to every Indian investor."*
 
 </div>
