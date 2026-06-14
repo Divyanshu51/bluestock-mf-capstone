@@ -1,0 +1,130 @@
+# Mutual Fund Analytics Platform
+### Bluestock Fintech Capstone Project — June 2026
+
+Built this during my internship at Bluestock Fintech. The goal was to put together a full data platform for mutual fund analytics — something that actually makes sense of the fragmented public data AMFI puts out, and turns it into insights a fund manager or retail investor can use.
+
+---
+
+## What this does
+
+India's MF industry manages over ₹81 lakh crore across 1,900+ schemes. The data is all over the place — AMFI, NSE, BSE, all in different formats. This platform:
+
+- Pulls NAV, AUM, SIP, and transaction data from AMFI India and mfapi.in
+- Cleans and stores everything in a normalised SQLite database (7-table star schema)
+- Computes Sharpe, Sortino, Alpha, Beta, VaR, CVaR, Max Drawdown, and HHI for all 40 schemes
+- Benchmarks fund performance against Nifty 50, Nifty 100, and BSE SmallCap
+- Presents everything in a 4-page interactive Power BI dashboard
+
+---
+
+## Quick start
+
+```bash
+git clone https://github.com/Divyanshu51/bluestock-mf-capstone.git
+cd bluestock-mf-capstone
+
+pip install -r requirements.txt
+
+# run the full pipeline (ingestion → cleaning → database)
+python run_pipeline.py
+
+# or skip live API fetch if you're offline
+python run_pipeline.py --skip-live
+```
+
+Then open `notebooks/` in Jupyter Lab and run each notebook in order.
+
+---
+
+## Project structure
+
+```
+bluestock_mf_capstone/
+├── scripts/
+│   ├── etl_pipeline.py         master ETL — extract, transform, load in sequence
+│   ├── data_ingestion.py       loads all 10 raw CSVs, validates AMFI codes
+│   ├── live_nav_fetch.py       fetches live NAV from mfapi.in REST API
+│   ├── data_cleaning.py        cleans all 10 datasets, saves to processed/
+│   ├── database_setup.py       loads cleaned data into SQLite star schema
+│   ├── compute_metrics.py      computes Sharpe, Alpha, VaR, scorecard — saves to reports/
+│   └── recommender.py          fund recommender by risk appetite (Low/Moderate/High)
+├── reports/
+│   ├── Final_Report.pdf
+│   └── Presentation.pptx
+├── run_pipeline.py             master script — runs entire ETL in sequence
+└── README.md
+```
+
+---
+## Datasets
+
+| File | Rows | What it contains |
+|---|---|---|
+| 01_fund_master.csv | 40 | Scheme master — fund house, category, expense ratio, risk grade |
+| 02_nav_history.csv | 46,000 | Daily NAV Jan 2022 to May 2026 |
+| 03_aum_by_fund_house.csv | 90 | Quarterly AUM for 10 fund houses |
+| 04_monthly_sip_inflows.csv | 48 | Monthly SIP inflow, accounts, AUM — AMFI Monthly Notes |
+| 05_category_inflows.csv | 144 | Net inflows by category FY 2024-25 |
+| 06_industry_folio_count.csv | 21 | Total folios by equity, debt, hybrid |
+| 07_scheme_performance.csv | 40 | Sharpe, Sortino, Alpha, Beta, CAGR, Drawdown per scheme |
+| 08_investor_transactions.csv | 32,778 | SIP/Lumpsum/Redemption for 5,000 investors across 12 states |
+| 09_portfolio_holdings.csv | 322 | Top equity holdings with sector weights |
+| 10_benchmark_indices.csv | 8,050 | Nifty 50, Nifty 100, BSE SmallCap, CRISIL daily values |
+
+Place all 10 files in `data/raw/` before running the pipeline.
+
+---
+
+## How to open the dashboard
+
+**Power BI Dashboard:**
+Open `dashboard/bluestock_mf_dashboard.pbix` in Power BI Desktop
+  ([View on GitHub](https://github.com/Divyanshu51/bluestock-mf-capstone/tree/main/Bluestack%20internship/bluestock_mf_capstone/Day-5/dashboard))
+- The report connects to the processed CSVs in `data/processed/` — update the data source path if needed via **Transform Data → Data Source Settings**
+- All 4 pages, slicers, tooltips, and cross-filtering are ready to use out of the box
+---
+
+How to run the ETL
+
+Option 1 — Master script (recommended):
+python run_pipeline.py              # full pipeline
+python run_pipeline.py --skip-live  # skip mfapi.in fetch if offline
+
+Option 2 — Individual scripts by bash command:
+python scripts/data_ingestion.py    # load and inspect all 10 CSVs
+python scripts/live_nav_fetch.py    # fetch live NAV (run on local machine only)
+python scripts/data_cleaning.py     # clean all datasets
+python scripts/database_setup.py    # load into SQLite
+python scripts/compute_metrics.py   # compute all performance metrics
+python scripts/recommender.py       # fund recommendations by risk appetite
+
+---
+
+---
+
+Self-review checklist
+
+
+ O1 — ETL pipeline built and runs without manual steps
+ O2 — 7-table star schema SQLite database with correct schema
+ O3 — EDA notebook with 15+ charts and documented insights
+ O4 — Performance metrics: Sharpe, Sortino, Alpha, Beta, VaR computed correctly
+ O5 — Power BI dashboard: 4 pages, slicers on every page, KPI cards
+ O6 — Investor demographic and geographic analysis completed
+ O7 — Benchmark comparison vs Nifty 50 and Nifty 100 with tracking error
+ O8 — Final report (PDF) and 12-slide presentation (PPTX) submitted
+ All 7 deliverables submitted
+ Code runs without errors
+ Dashboard loads correctly
+ Report is professional
+
+## Tech stack
+
+Python 3.10 | Pandas | NumPy | Matplotlib | Seaborn | SciPy | SQLite | SQLAlchemy | Power BI | Jupyter Lab | mfapi.in
+
+---
+
+## Data sources
+
+All data is from publicly available sources — AMFI India, mfapi.in (public REST API), NSE, and BSE.
+This project is for educational purposes only and does not constitute financial advice.
