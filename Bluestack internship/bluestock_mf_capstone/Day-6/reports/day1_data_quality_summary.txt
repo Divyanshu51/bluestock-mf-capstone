@@ -1,0 +1,26 @@
+DATA QUALITY SUMMARY - DAY 1
+========================================
+
+fund_master     : 40 rows, 15 columns
+nav_history     : 46000 rows, 3 columns
+
+AMFI Code Validation
+------------------------------
+Codes in fund_master           : 40
+Codes in nav_history           : 40
+In fund_master but not nav     : 0 -> None
+In nav but not fund_master     : 0 -> None
+
+NAV Data
+------------------------------
+Date range     : 2022-01-03 to 2026-05-29
+Null NAV values: 0
+NAV <= 0 count : 0
+
+Observations
+------------------------------
+- All datasets loaded without errors.
+- Date columns need parsing from string to datetime (will handle in Day 2 cleaning).
+- SIP inflow dataset has NaN in yoy_growth_pct for first year rows - expected, not a bug.
+- investor_transactions has most columns look clean, KYC status is either Verified/Pending.
+- No negative NAV values found - data looks trustworthy.
