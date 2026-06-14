@@ -1,144 +1,253 @@
-# Mutual Fund Analytics Platform
-### Bluestock Fintech Capstone Project — June 2026
+# 📊 Bluestock Fintech — Mutual Fund Analytics Platform
 
-Built this during my internship at Bluestock Fintech. The goal was to put together a full data platform for mutual fund analytics — something that actually makes sense of the fragmented public data AMFI puts out, and turns it into insights a fund manager or retail investor can use.
+<div align="center">
+
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
+![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-Data%20Wrangling-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![Jupyter](https://img.shields.io/badge/Jupyter-Notebooks-F37626?style=for-the-badge&logo=jupyter&logoColor=white)
+
+**End-to-end Mutual Fund Analytics Platform built as a Data Analyst Intern Capstone at Bluestock Fintech Pvt. Ltd.**
+
+*7 Working Days | June 2026 | Data Source: AMFI India, mfapi.in, NSE/BSE*
+
+| 40 | 87,393+ | 32,778 | 10 |
+|:---:|:---:|:---:|:---:|
+| Fund Schemes | Total Rows | Transactions | Fund Houses |
+
+</div>
 
 ---
 
-## What this does
+## 📸 Dashboard Screenshots
 
-India's MF industry manages over ₹81 lakh crore across 1,900+ schemes. The data is all over the place — AMFI, NSE, BSE, all in different formats. This platform:
+### Page 1 — Industry Overview
+![Industry Overview](https://raw.githubusercontent.com/Divyanshu51/bluestock-mf-capstone/main/Bluestack%20internship/Day-5/Images/Industry%20Overview.png)
 
-- Pulls NAV, AUM, SIP, and transaction data from AMFI India and mfapi.in
-- Cleans and stores everything in a normalised SQLite database (7-table star schema)
-- Computes Sharpe, Sortino, Alpha, Beta, VaR, CVaR, Max Drawdown, and HHI for all 40 schemes
-- Benchmarks fund performance against Nifty 50, Nifty 100, and BSE SmallCap
-- Presents everything in a 4-page interactive Power BI dashboard
+### Page 2 — Fund Performance
+![Fund Performance](https://raw.githubusercontent.com/Divyanshu51/bluestock-mf-capstone/main/Bluestack%20internship/Day-5/Images/Fund%20Performance.png)
+
+### Page 3 — Investor Analytics
+![Investor Analytics](https://raw.githubusercontent.com/Divyanshu51/bluestock-mf-capstone/main/Bluestack%20internship/Day-5/Images/Investor%20Analytics.png)
+
+### Page 4 — SIP & Market Trends
+![SIP & Market Trends](https://raw.githubusercontent.com/Divyanshu51/bluestock-mf-capstone/main/Bluestack%20internship/Day-5/Images/SIP%20%26%20Market%20Trends.png)
 
 ---
 
-## Quick start
+## 🎯 Project Overview
 
-```bash
-git clone https://github.com/Divyanshu51/bluestock-mf-capstone.git
-cd bluestock-mf-capstone
+The Indian mutual fund industry manages over ₹62.74 lakh crore in AUM, yet retail investors lack access to institutional-grade analytics. This platform solves that gap by building a complete data pipeline — from raw AMFI data to an interactive Power BI dashboard — covering risk metrics, investor behaviour, and fund performance across 40 schemes.
 
-pip install -r requirements.txt
+### Problems Solved
 
-# run the full pipeline (ingestion → cleaning → database)
-python run_pipeline.py
+| # | Problem | Solution |
+|---|---------|----------|
+| P1 | NAV, AUM, SIP data fragmented across AMFI/NSE/BSE | Unified ETL pipeline into single SQLite DB |
+| P2 | No easy way to compare 40+ funds on risk-adjusted metrics | Sharpe, Sortino, Alpha, Beta computed for all schemes |
+| P3 | Retail investors can't track benchmark performance | Nifty 50 / Nifty 100 / CRISIL comparison built-in |
+| P4 | Limited visibility into SIP demographic patterns | 32,778 transactions analysed by state, age, city tier |
+| P5 | Monthly MF reports are static PDFs | 4-page live Power BI dashboard with slicers |
 
-# or skip live API fetch if you're offline
-python run_pipeline.py --skip-live
+---
+
+## 🏗️ Architecture
+
+```
+Raw Data (AMFI / mfapi.in / NSE)
+        │
+        ▼
+┌─────────────────┐
+│  ETL Pipeline   │  etl_pipeline.py — Extract → Clean → Validate → Load
+│  (Python)       │  live_nav_fetch.py — Daily cron @ 8 PM IST
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  SQLite DB      │  bluestock_mf.db — 10-table star schema
+│  (Star Schema)  │  Indexes on amfi_code + date
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Jupyter        │  EDA → Performance Metrics → Advanced Analytics
+│  Notebooks (5)  │  Sharpe | VaR | Monte Carlo | Markowitz Frontier
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Power BI       │  4-page interactive dashboard
+│  Dashboard      │  12 DAX measures | 5 table relationships
+└─────────────────┘
 ```
 
-Then open `notebooks/` in Jupyter Lab and run each notebook in order.
-
 ---
 
-## Project structure
+## 📁 Project Structure
 
 ```
 bluestock_mf_capstone/
 ├── data/
-│   ├── raw/              original CSVs + live NAV files from mfapi.in
-│   ├── processed/        cleaned datasets ready for analysis
-│   └── db/               SQLite database (not pushed to GitHub — see note)
+│   ├── raw/                        ← 10 original CSVs from AMFI/NSE
+│   ├── processed/                  ← 13 cleaned + derived CSVs
+│   └── db/
+│       └── bluestock_mf.db         ← SQLite (NOT committed — see schema.sql)
 ├── notebooks/
-│   ├── 04_Performance_Analytics.ipynb
-│   └── 06_Advanced_Analytics.ipynb
+│   ├── 01_data_ingestion.ipynb
+│   ├── 02_data_cleaning.ipynb
+│   ├── 03_eda_analysis.ipynb
+│   ├── 04_performance_analytics.ipynb
+│   └── 05_advanced_analytics.ipynb
 ├── scripts/
-│   ├── data_ingestion.py    loads all 10 raw CSVs, validates AMFI codes
-│   ├── live_nav_fetch.py    fetches live NAV from mfapi.in REST API
-│   ├── data_cleaning.py     cleans all 10 datasets, saves to processed/
-│   ├── database_setup.py    loads cleaned data into SQLite star schema
-│   └── recommender.py       fund recommender by risk appetite
+│   ├── etl_pipeline.py             ← Main ETL — runs without manual steps
+│   ├── live_nav_fetch.py           ← mfapi.in live NAV fetcher (cron-ready)
+│   ├── compute_metrics.py          ← Recompute all metrics from latest NAV
+│   └── recommender.py              ← CLI fund recommender by risk appetite
 ├── sql/
-│   ├── schema.sql           CREATE TABLE statements
-│   └── queries.sql          10 analytical SQL queries
+│   ├── schema.sql                  ← Full DB schema
+│   └── queries.sql                 ← 12 key analytical SQL queries
 ├── dashboard/
-│   └── bluestock_mf_dashboard.pbix   Power BI report (4 pages, slicers, cross-filtering)
+│   └── bluestock_mf.pbix           ← Power BI 4-page dashboard
 ├── reports/
-│   ├── fund_scorecard.csv
-│   ├── alpha_beta.csv
-│   ├── var_cvar_report.csv
-│   ├── benchmark_comparison.png
-│   └── Final_Report.pdf
-├── run_pipeline.py          master script — runs entire ETL in sequence
-├── requirements.txt
+│   ├── Final_Report.pdf
+│   └── Presentation.pptx
+├── logs/
+├── .gitignore
 └── README.md
 ```
 
 ---
 
-## Datasets
+## 📦 Datasets
 
-| File | Rows | What it contains |
-|---|---|---|
-| 01_fund_master.csv | 40 | Scheme master — fund house, category, expense ratio, risk grade |
-| 02_nav_history.csv | 46,000 | Daily NAV Jan 2022 to May 2026 |
-| 03_aum_by_fund_house.csv | 90 | Quarterly AUM for 10 fund houses |
-| 04_monthly_sip_inflows.csv | 48 | Monthly SIP inflow, accounts, AUM — AMFI Monthly Notes |
-| 05_category_inflows.csv | 144 | Net inflows by category FY 2024-25 |
-| 06_industry_folio_count.csv | 21 | Total folios by equity, debt, hybrid |
-| 07_scheme_performance.csv | 40 | Sharpe, Sortino, Alpha, Beta, CAGR, Drawdown per scheme |
-| 08_investor_transactions.csv | 32,778 | SIP/Lumpsum/Redemption for 5,000 investors across 12 states |
-| 09_portfolio_holdings.csv | 322 | Top equity holdings with sector weights |
-| 10_benchmark_indices.csv | 8,050 | Nifty 50, Nifty 100, BSE SmallCap, CRISIL daily values |
+| # | File | Rows | Description |
+|---|------|------|-------------|
+| 01 | fund_master | 40 | Fund house, category, expense ratio, risk grade |
+| 02 | nav_history | 46,000+ | Daily NAV — Jan 2022 to May 2026 (ffill applied) |
+| 03 | aum_by_fund_house | 90 | Quarterly AUM (₹ Crore) for 10 fund houses |
+| 04 | monthly_sip_inflows | 48 | SIP inflow, active accounts, new registrations |
+| 05 | category_inflows | 144 | Net inflows by fund category |
+| 06 | industry_folio_count | 21 | Total folios — equity, debt, hybrid segments |
+| 07 | scheme_performance | 40 | 1yr/3yr returns, Sharpe, Sortino, Alpha, Beta |
+| 08 | investor_transactions | 32,778 | SIP/Lumpsum/Redemption — 5,000 investors, 12 states |
+| 09 | portfolio_holdings | 322 | Equity holdings with sector weights per fund |
+| 10 | benchmark_indices | 8,050 | Daily Nifty 50, Nifty 100, CRISIL closing values |
 
-Place all 10 files in `data/raw/` before running the pipeline.
-
----
-
-## How to open the dashboard
-
-**Power BI Dashboard:**
-- Open `dashboard/bluestock_mf_dashboard.pbix` in Power BI Desktop
-  ([View on GitHub](https://github.com/Divyanshu51/bluestock-mf-capstone/tree/main/Bluestack%20internship/bluestock_mf_capstone/Day-5/dashboard))
-- The report connects to the processed CSVs in `data/processed/` — update the data source path if needed via **Transform Data → Data Source Settings**
-- All 4 pages, slicers, tooltips, and cross-filtering are ready to use out of the box
+> ⚠️ Raw data files are not committed. Place them in `data/raw/` before running the ETL.
 
 ---
 
-## Running individual scripts
+## 🚀 Getting Started
 
+### Prerequisites
 ```bash
-# just load and inspect all 10 datasets
-python scripts/data_ingestion.py
+pip install pandas numpy matplotlib scipy requests jupyter
+```
 
-# fetch live NAV from mfapi.in (run on local machine — API blocks cloud IPs)
-python scripts/live_nav_fetch.py
+### 1. Run the ETL Pipeline
+```bash
+python scripts/etl_pipeline.py
+```
 
-# clean all datasets
-python scripts/data_cleaning.py
+### 2. Run the Notebooks (in order)
+```bash
+jupyter lab notebooks/
+```
+Run `01` → `02` → `03` → `04` → `05` in sequence.
 
-# load into SQLite
-python scripts/database_setup.py
-
-# fund recommender
+### 3. Use the Fund Recommender
+```bash
+# Interactive mode
 python scripts/recommender.py
+
+# CLI mode
+python scripts/recommender.py --risk High --top 5
 ```
 
----
-
-## Note on database file
-
-The `.db` file is in `.gitignore` because SQLite binaries don't belong in Git. To recreate it:
+### 4. Schedule Live NAV Fetch
 ```bash
-python scripts/data_cleaning.py
-python scripts/database_setup.py
+# Runs every weekday at 8 PM IST
+0 20 * * 1-5 /usr/bin/python3 /path/to/scripts/live_nav_fetch.py
 ```
-This rebuilds `data/db/bluestock_mf.db` from the CSVs in about 30 seconds.
 
 ---
 
-## Tech stack
+## 📊 Key Metrics & Findings
 
-Python 3.10 | Pandas | NumPy | Matplotlib | Seaborn | SciPy | SQLite | SQLAlchemy | Power BI | Jupyter Lab | mfapi.in
+### Industry Overview
+| Metric | Value |
+|--------|-------|
+| Industry AUM (Dec 2025) | ₹62.74 Lakh Crore |
+| Monthly SIP Inflow | ₹31,002 Crore (all-time high) |
+| SIP Growth (2022–2025) | 169% (₹11,517 Cr → ₹31,002 Cr) |
+| Total Folios | 26.12 Crore |
+| Active SIP Accounts | 9.35 Crore |
+
+### Top Funds by Sharpe Ratio
+| Rank | Fund | Category | 3Y CAGR | Sharpe |
+|------|------|----------|---------|--------|
+| 1 | ICICI Pru Liquid Fund | Liquid | — | 7.8+ |
+| 2 | Kotak Liquid Fund | Liquid | — | 6.2 |
+| 3 | Kotak Emerging Equity Fund | Mid Cap | 18.2% | 0.960 |
+| 4 | ICICI Pru Midcap Fund | Mid Cap | 18.1% | 0.950 |
+| 5 | SBI Small Cap Fund | Small Cap | 23.4% | 0.940 |
+
+### VaR 95% Risk Metrics
+| Fund | Daily VaR | Daily CVaR |
+|------|-----------|------------|
+| SBI Small Cap Fund | -2.69% | -3.24% |
+| ABSL Small Cap Fund | -2.39% | -3.10% |
+| ICICI Pru Liquid Fund | -0.02% | -0.03% |
 
 ---
 
-## Data sources
+## 🔬 Deliverables
 
-All data is from publicly available sources — AMFI India, mfapi.in (public REST API), NSE, and BSE.
-This project is for educational purposes only and does not constitute financial advice.
+| ID | Deliverable | Status |
+|----|-------------|--------|
+| D1 | `etl_pipeline.py` — automated ETL, no manual steps | ✅ Done |
+| D2 | `bluestock_mf.db` — 10-table SQLite star schema | ✅ Done |
+| D3 | `03_eda_analysis.ipynb` — 15+ charts | ✅ Done |
+| D4 | `04_performance_analytics.ipynb` + CSVs | ✅ Done |
+| D5 | `bluestock_mf.pbix` — 4-page Power BI dashboard | ✅ Done |
+| D6 | `05_advanced_analytics.ipynb` | ✅ Done |
+| D7 | `Final_Report.pdf` + `Presentation.pptx` | ✅ Done |
+| B1 | Live NAV cron fetch from mfapi.in | ✅ Done |
+| B3 | Monte Carlo 5-year NAV projection | ✅ Done |
+| B4 | Markowitz Efficient Frontier | ✅ Done |
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Tool | Purpose |
+|----------|------|---------|
+| Language | Python 3.10+ | ETL, analytics, automation |
+| Data Wrangling | Pandas 2.0, NumPy | Cleaning, time-series |
+| Visualisation | Matplotlib, Plotly | EDA charts |
+| Statistics | SciPy | OLS regression for Alpha/Beta |
+| Database | SQLite | 10-table star schema |
+| Dashboard | Power BI Desktop | 4-page interactive report |
+| Live Data | mfapi.in REST API | Daily NAV fetch |
+| Notebooks | Jupyter Lab | Analysis & documentation |
+
+---
+
+## ⚠️ Limitations
+
+- NAV data covers Jan 2022 – May 2026 (4.4 years) — 5-year CAGR not computable
+- Portfolio holdings are a single snapshot (Dec 2025)
+- VaR uses historical simulation — does not model black swan events
+- `*.db` files excluded from git — use `schema.sql` to recreate
+
+---
+
+<div align="center">
+
+**Divyanshu Rai** — Data Analyst Intern
+Bluestock Fintech Pvt. Ltd. | June 2026
+
+*"Making institutional-grade fund analytics accessible to every Indian investor."*
+
+</div>
